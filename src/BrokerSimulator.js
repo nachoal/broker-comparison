@@ -174,6 +174,64 @@ const BrokerSimulator = () => {
           <li>IBKR: {data[data.length - 1].IBKRFees.toFixed(2)} MXN</li>
         </ul>
       </div>
+      <div className="mt-8">
+        <h3 className="text-xl font-bold mb-4">Explicación de Comisiones por Broker</h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="border p-4 rounded-lg">
+            <h4 className="text-lg font-semibold mb-2">GBM</h4>
+            <ul className="list-disc pl-5">
+              <li>Comisión de corretaje: Varía según el monto operado en los últimos 3 meses:</li>
+              <ul className="list-circle pl-5">
+                <li>0 - 1,000,000 MXN: 0.25%</li>
+                <li>1,000,001 - 3,000,000 MXN: 0.20%</li>
+                <li>3,000,001 - 5,000,000 MXN: 0.15%</li>
+                <li>5,000,001 - 10,000,000 MXN: 0.125%</li>
+                <li>Más de 10,000,000 MXN: 0.10%</li>
+              </ul>
+              <li>Sin comisión anual</li>
+              <li>Sin comisión por inactividad</li>
+            </ul>
+          </div>
+          
+          <div className="border p-4 rounded-lg">
+            <h4 className="text-lg font-semibold mb-2">Actinver</h4>
+            <ul className="list-disc pl-5">
+              <li>Comisión de corretaje: Varía según el monto operado en los últimos 30 días:</li>
+              <ul className="list-circle pl-5">
+                <li>0 - 1,000,000 MXN: 0.25%</li>
+                <li>1,000,001 - 5,000,000 MXN: 0.20%</li>
+                <li>5,000,001 - 10,000,000 MXN: 0.15%</li>
+                <li>Más de 10,000,000 MXN: 0.10%</li>
+              </ul>
+              <li>Comisión anual: 500 MXN</li>
+              <li>Comisión por saldo mínimo: 100 MXN mensuales si el saldo es menor a 5,000 MXN</li>
+              <li>Custodia Indeval:</li>
+              <ul className="list-circle pl-5">
+                <li>1 - 500,000 MXN: 50 MXN mensuales</li>
+                <li>Más de 500,000 MXN: 0.01050% + 0.30 MXN mensuales</li>
+              </ul>
+            </ul>
+          </div>
+          
+          <div className="border p-4 rounded-lg">
+            <h4 className="text-lg font-semibold mb-2">IBKR</h4>
+            <ul className="list-disc pl-5">
+              <li>Comisión de corretaje: 0.35% del valor de la operación, con un mínimo de 0.35 USD por orden</li>
+              <li>Máximo del 1% del valor de la operación</li>
+              <li>Sin comisión anual</li>
+              <li>Sin comisión por inactividad</li>
+              <li>Conversión de divisas: 0.20 basis points (0.002%) del valor de la operación</li>
+              <li>Comisión por datos de mercado en tiempo real: Varía según el mercado, puede ser gratuito si se cumple un mínimo de comisiones mensuales</li>
+            </ul>
+          </div>
+        </div>
+        
+        <p className="mt-4 text-sm text-gray-600">
+          Nota: Todas las comisiones están sujetas a cambios y pueden variar según el tipo de cuenta y el volumen de operaciones. 
+          Se recomienda verificar las comisiones actuales directamente con cada broker antes de tomar decisiones de inversión.
+        </p>
+      </div>
     </div>
   );
 };
