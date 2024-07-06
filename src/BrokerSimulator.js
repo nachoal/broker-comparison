@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const BrokerSimulator = () => {
@@ -21,13 +21,12 @@ const BrokerSimulator = () => {
     }
   };
 
-  const simulateInvestment = () => {
+  const simulateInvestment = useCallback(() => {
     const months = Math.max(1, Math.floor(years)) * 12;
     const monthlyReturnRate = Math.pow(1 + annualReturn / 100, 1/12) - 1;
     
     let data = Array(months).fill().map((_, month) => {
       const baseAmount = monthlyInvestment * (month + 1);
-      const usdAmount = baseAmount / exchangeRate;
       
       const results = ['GBM', 'Actinver', 'IBKR'].map(broker => {
         let totalValue = 0;
@@ -58,20 +57,23 @@ const BrokerSimulator = () => {
     });
 
     return data;
-  };
+  }, [monthlyInvestment, exchangeRate, annualReturn, years]);
 
   const [data, setData] = useState(simulateInvestment());
 
   useEffect(() => {
     setData(simulateInvestment());
-  }, [monthlyInvestment, exchangeRate, annualReturn, years]);
+  }, [monthlyInvestment, exchangeRate, annualReturn, years, simulateInvestment]);
 
   const handleYearsChange = (e) => {
     const value = e.target.value;
-    if (value === '' || isNaN(value)) {
-      setYears(1);
+    if (value === '') {
+      setYears('');
     } else {
-      setYears(Math.max(1, Math.floor(Number(value))));
+      const numValue = parseInt(value, 10);
+      if (!isNaN(numValue)) {
+        setYears(Math.min(Math.max(numValue, 1), 1000)); // Allow up to 1000 years
+      }
     }
   };
 
@@ -116,8 +118,12 @@ const BrokerSimulator = () => {
             type="number"
             value={years}
             onChange={handleYearsChange}
+          onBlur={() => {
+            if (years === '' || years < 1) setYears(1);
+            if (years > 1000) setYears(1000);
+          }}
             min="1"
-            max="10"
+            max="1000"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
           />
         </div>
