@@ -6,7 +6,32 @@ const BrokerSimulator = () => {
   const [exchangeRate, setExchangeRate] = useState(17.5);
   const [annualReturn, setAnnualReturn] = useState(7);
   const [years, setYears] = useState(1);
-  const [chartType, setChartType] = useState('line');
+  const [chartType, setChartType] = useState('bar');
+
+  const formatMXN = (value) => {
+    return new Intl.NumberFormat('es-MX', {
+      style: 'currency',
+      currency: 'MXN',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    }).format(value);
+  };
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      return (
+        <div className="custom-tooltip bg-white p-2 border border-gray-300 rounded shadow">
+          <p className="label">{`Mes: ${label}`}</p>
+          {payload.map((entry, index) => (
+            <p key={`item-${index}`} style={{ color: entry.color }}>
+              {`${entry.name}: ${formatMXN(entry.value)}`}
+            </p>
+          ))}
+        </div>
+      );
+    }
+    return null;
+  };
 
   const calculateFees = (broker, amount) => {
     switch(broker) {
@@ -145,7 +170,7 @@ const BrokerSimulator = () => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" label={{ value: 'Meses', position: 'insideBottomRight', offset: -10 }} />
             <YAxis label={{ value: 'Valor (MXN)', angle: -90, position: 'insideLeft' }} />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Line type="monotone" dataKey="invested" stroke="#8884d8" name="Invertido" />
             <Line type="monotone" dataKey="GBM" stroke="#82ca9d" name="GBM" />
@@ -157,7 +182,7 @@ const BrokerSimulator = () => {
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="month" label={{ value: 'Meses', position: 'insideBottomRight', offset: -10 }} />
             <YAxis label={{ value: 'Valor (MXN)', angle: -90, position: 'insideLeft' }} />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Legend />
             <Bar dataKey="invested" fill="#8884d8" name="Invertido" />
             <Bar dataKey="GBM" fill="#82ca9d" name="GBM" />
@@ -169,9 +194,9 @@ const BrokerSimulator = () => {
       <div className="mt-4">
         <h3 className="text-lg font-semibold mb-2">Comisiones Totales Después de {years} Año(s)</h3>
         <ul className="list-disc pl-5">
-          <li>GBM: {data[data.length - 1].GBMFees.toFixed(2)} MXN</li>
-          <li>Actinver: {data[data.length - 1].ActinverFees.toFixed(2)} MXN</li>
-          <li>IBKR: {data[data.length - 1].IBKRFees.toFixed(2)} MXN</li>
+          <li>GBM: {formatMXN(data[data.length - 1].GBMFees)}</li>
+          <li>Actinver: {formatMXN(data[data.length - 1].ActinverFees)}</li>
+          <li>IBKR: {formatMXN(data[data.length - 1].IBKRFees)}</li>
         </ul>
       </div>
       <div className="mt-8">
